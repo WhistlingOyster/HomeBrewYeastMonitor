@@ -3,36 +3,29 @@
 #define ROTARY_ANGLE_SENSOR A0
 #define GROVE_VCC 5
 #define FULL_ANGLE 300
-#define LED 2 //connect LED to digital pin2
-
+#define LED 2
 #include <math.h>
-//#include <time.h>
 #include "rgb_lcd.h"
 
 rgb_lcd lcd;
 
-/*Display*/
 int colorR = 100;
 int colorG = 100;
 int colorB = 100;
-
 unsigned long elapsed, over;
 float h, m, s;                    //Time will flip to zero after 60 min and 60 seconds
-float H, M, S, D = 0;                    //Continouse time tracking
-
+float H, M, S, D = 0;             //Continouse time tracking
 const int B = 4275;               // B value of the thermistat
 const int R0 = 10000;            // R0 = 100k
 const int pinTempSensor = A3;     // Grove - Temperature Sensor connect to A3
 int f = 0;                            //Fahrenheit
-
 const int ledPin=12;                 // 12C
 const int digPin = 2;                // D2
 const int thresholdvalue=150;         //The threshold for which the LED should turn on. 
 int prevdegrees = 300;                //Remember what the value was before
 int bbcount = 0;                      //How many bubbles?
-int prevH = 0;                            //Previouse Hours
-int prevM = -1;                            //Previouse Minutes
-
+int prevH = 0;                        //Previouse Hours
+int prevM = -1;                       //Previouse Minutes
 
 void setup() 
 {
@@ -45,17 +38,11 @@ void setup()
 }
 void loop() 
 {
-/*BUBBLE */
-
-  /*Check for Bubble activity*/
+  /*LIQUID SENSOR*/
       int sensor_value = analogRead(ROTARY_ANGLE_SENSOR);
       float voltage = (float)sensor_value*ADC_REF/1023;
       int degrees = (voltage*FULL_ANGLE)/GROVE_VCC;    
-
-      //lcd.setCursor(6, 0);
-      //lcd.print(degrees,DEC); //Show me the Value of the Sensor
-
-      
+    
     if (degrees >= thresholdvalue){    
       prevdegrees = degrees;
       }
@@ -66,14 +53,11 @@ void loop()
           lcd.setCursor(6, 0);
           lcd.print("      ");        // clear the space first
           lcd.setCursor(6, 0);          
-          lcd.print(bbcount,DEC);
-          
+          lcd.print(bbcount,DEC);          
         }
       prevdegrees = degrees;
       }   
       delay(250); //40 times per second
-      //lcd.clear();
-      
 
 /*TIME*/
   /*millis() is how many miliseconds has the arduiono been on? 
@@ -81,10 +65,7 @@ void loop()
     elapsed = millis(); 
     h = int(elapsed / 3600000); 
     over = elapsed % 3600000;
-    m = int(over / 60000);
-    //over = over % 60000;      //Seconds are not needed.
-    //s = int(over / 1000);
-
+    m = int(over / 60000);    
 
   /*millis() is how many miliseconds has the arduiono been on? 
   Then Convert the ms to Hours and Minutes*/ 
@@ -107,10 +88,7 @@ if(prevM < M){   //Limit this section to only run once a minute.
               lcd.setCursor(11,1);
               lcd.print("Dy:");            
               lcd.print(D,0);
-              //lcd.setCursor(12,1);
-              //lcd.print("S:");            
-              //lcd.print(s,0); 
-
+              
         /*Record Bubbles Per Hour if we are at the hour mark*/
            if(prevH < H){                
               Serial.print(bbcount);
@@ -129,22 +107,22 @@ if(prevM < M){   //Limit this section to only run once a minute.
               f = (int) temperature; // Convert the datatype float to an int
               f = (f * 1.8) + 32; //Convert to Fahrenheit
           
-          /*ALE   68-73 Fahrenheit*/
-          /*LAGER 45-55 Fahrenheit*/
-          /*Change the color of the screen*/
+         /*Change the color of the screen*/
+                //ALE   68-73 Fahrenheit
+                //LAGER 45-55 Fahrenheit
             if(f <= 67) {
-              lcd.setRGB(0, 0, 255);// Blue              
+              lcd.setRGB(0, 0, 255);// Blue "Too cold!"
             }
             else if (f >= 73){
-              lcd.setRGB(255, 0, 0);// Red              
+              lcd.setRGB(255, 0, 0);// Red "Too hot!"
             }
             else{
-              lcd.setRGB(0, 128, 0);// Green
+              lcd.setRGB(0, 128, 0);// Green "Aww Just Right!"
             }
                 lcd.setCursor(12, 0);
                 lcd.print("F:");
                 lcd.print(f);
   
-    prevM = M; //Now wait a minute
+    prevM = M;
     }
 }
