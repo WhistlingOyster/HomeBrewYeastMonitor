@@ -14,11 +14,11 @@ Attach a liquid level sensor to the airlock of your fermenting beer/wine/cider s
 https://trumsense.com/products/xkc-y26a-v-contactless-water-level-sensor-1
 ###### Liquid Sensor (Left) Grove cable (Right)
 - Black ---> Not connected
-- Not connected <--- White
 - Brown ---> Red
 - Blue ---> Black
 - Yellow ---> Yellow
 - Yellow ---> LED ---> Black
+- Not connected <--- White
 
 ## Instructions
 - Boil your barley and hops. Squeeze your apples. Step on your grapes. 
